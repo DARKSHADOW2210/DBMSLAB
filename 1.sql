@@ -29,3 +29,25 @@ INSERT INTO Sales (bill_no, bill_date, cust_id, item_id, qty_sold) VALUES
 select c.cust_name, i.item_id,s.bill_no
 from customers c,items i, sales s
 where c.cust_id = s.cust_id and i.item_id = s.item_id and s.bill_date = current_date; 
+
+select i.price,s.qty_sold,(i.price * s.qty_sold) as total 
+from items i,sales s
+where i.item_id = s.item_id;
+
+select c.cust_id,c.cust_name
+from customers c,sales s,items i
+where c.cust_id = s.cust_id and i.item_id = s.item_id and i.price>50; 
+
+select distinct cust_id ,count(item_id)
+from sales 
+group by cust_id;
+
+select i.item_name from items i,sales s where i.item_id = s.item_id and s.cust_id = 3;
+
+select i.item_id,i.item_name from items i,sales s where i.item_id = s.item_id and s.bill_date = '2024-11-27';
+
+create view cust as 
+select s.bill_no,s.bill_date,c.cust_id,i.item_id,i.cost,s.qty_sold,(i.cost * 
+s.qty_sold)amount
+from customers c,sales s,items i
+where c.cust_id = s.cust_id and i.item_id = s.item_id; 
