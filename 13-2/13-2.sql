@@ -1,0 +1,20 @@
+create table employee1(emp_id int primary key,emp_name varchar(20),salary int,mobile_no int,dept char(8));
+
+create table emp_log(emp_name varchar(50),salary int);
+
+delimiter //
+
+create trigger aft_inc
+after insert on employee1
+for each row
+begin
+insert into emp_log values(new.emp_name,new.salary);
+end //
+
+delimiter ;
+
+insert into employee1 values(101,'aruna',10000,7985632,'it');
+
+select * from employee1;
+
+select * from emp_log;
