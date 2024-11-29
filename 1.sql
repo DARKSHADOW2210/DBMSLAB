@@ -47,7 +47,10 @@ select i.item_name from items i,sales s where i.item_id = s.item_id and s.cust_i
 select i.item_id,i.item_name from items i,sales s where i.item_id = s.item_id and s.bill_date = '2024-11-27';
 
 create view cust as 
-select s.bill_no,s.bill_date,c.cust_id,i.item_id,i.cost,s.qty_sold,(i.cost * 
-s.qty_sold)amount
+select s.bill_no,s.bill_date,c.cust_id,i.item_id,i.cost,s.qty_sold,(i.cost * s.qty_sold) as amount
 from customers c,sales s,items i
 where c.cust_id = s.cust_id and i.item_id = s.item_id; 
+
+create view list as
+select * from sales
+where bill_date between '2016-12-04' and '2016-12-15';
