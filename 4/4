@@ -1,0 +1,75 @@
+CREATE TABLE customer (
+    cust_no INT PRIMARY KEY,
+    cust_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE membership (
+    mem_no INT PRIMARY KEY,
+    cust_no INT,
+    FOREIGN KEY (cust_no) REFERENCES customer(cust_no)
+);
+
+CREATE TABLE cassette (
+    cass_no INT PRIMARY KEY,
+    cass_name VARCHAR(100) NOT NULL,
+    language VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE iss_rec (
+    iss_no INT PRIMARY KEY,
+    iss_date DATE NOT NULL,
+    mem_no INT,
+    cass_no INT,
+    FOREIGN KEY (mem_no) REFERENCES membership(mem_no),
+    FOREIGN KEY (cass_no) REFERENCES cassette(cass_no)
+);
+
+INSERT INTO customer (cust_no, cust_name) VALUES
+(1001, 'John Doe'),
+(1002, 'Jane Smith'),
+(1003, 'Michael Johnson'),
+(1004, 'Emily Brown'),
+(1005, 'David Lee');
+
+INSERT INTO membership (mem_no, cust_no) VALUES
+(5001, 1001),
+(5002, 1002),
+(5003, 1003),
+(5004, 1004),
+(5005, 1005);
+
+INSERT INTO cassette (cass_no, cass_name, language) VALUES
+(2001, 'The Great Gatsby', 'English'),
+(2002, 'Moby Dick', 'English'),
+(2003, 'Pride and Prejudice', 'Spanish'),
+(2004, 'Jane Eyre', 'Spanish'),
+(2005, 'Animal Farm', 'English');
+
+INSERT INTO iss_rec (iss_no, iss_date, mem_no, cass_no) VALUES
+(1, '2024-07-01', 5001, 2001),
+(2, '2024-07-02', 5002, 2002),
+(3, '2024-07-02', 5003, 2003),
+(4, '2024-07-04', 5004, 2004),
+(5, '2024-07-05', 5005, 2005);
+
+--list all the customer names with their membership numbers 
+select cust_name,mem_no from customer c,membership m where c.cust_no=m.cust_no;
+
+--list all the issues for the current date with the customer names and cassette names
+select iss_no,iss_date,cust_name,cass_name from customer c,cassette ca,membership m,iss_rec i where ca.cass_no=i.cass_no and m.mem_no=i.mem_no and c.cust_no=m.cust_no and i.iss_date='2016-10-02';
+
+--list the details of the customer who has borrowed the cassette whose title is "movie3"
+select cu.cust_no,cu.cust_name,m.mem_no,c.cass_no,cass_name,language,iss_no,iss_date from customer cu,membership m,cassette c,iss_rec i where i.mem_no=m.mem_no and i.cass_no=c.cass_no and cu.cust_no=m.cust_no and c.cass_name='movie3';
+
+--give a count of how many cassettes have been borrowed by the each customer
+select c.cust_no,count(ca.cass_no) from customer c,membership m,cassetteca,iss_rec i where i.mem_no=m.mem_no and ca.cass_no=i.cass_no and c.cust_no=m.cust_no group by cust_no;
+
+--give a list of cassette which has been taken by the customer with mem_no as 250
+select ca.cass_no,ca.cass_name ,ca.language from customer c,membership m, cassette ca,iss_rec i where i.mem_no=m.mem_no and i.cass_no=ca.cass_no and m.cust_no=c.cust_no and c.cust_no=250;
+
+--list the cassettes issues for today
+select cass_name from cassette c,iss_rec i where c.cass_no=i.cass_no and i.iss_date='2016-10-02';
+
+create view items as select i.iss_no,i.iss_date,c.cust_name,ca.cass_name from customer c,membership m,cassette ca,iss_rec i where m.mem_no=i.mem_no and i.cass_no=ca.cass_no and c.cust_no=m.cust_no;
+
+create  view item2 as select iss_no, iss_date,mem_no,cass_no from iss_rec where iss_date between '2010-09-25' and '2015-01-15'; 
