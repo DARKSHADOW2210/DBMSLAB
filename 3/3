@@ -1,0 +1,81 @@
+-- Task 1: Create Tables
+CREATE TABLE employee (
+  emp_id INT PRIMARY KEY,
+  emp_name VARCHAR(50)
+);
+
+CREATE TABLE department (
+  dept_id INT PRIMARY KEY,
+  dept_name VARCHAR(50)
+);
+
+CREATE TABLE paydetails (
+  emp_id INT,
+  dept_id INT,
+  basic INT,
+  deductions INT,
+  additions INT,
+  doj DATE,
+  PRIMARY KEY (emp_id, dept_id),
+  FOREIGN KEY (emp_id) REFERENCES employee(emp_id),
+  FOREIGN KEY (dept_id) REFERENCES department(dept_id)
+);
+
+CREATE TABLE payroll (
+  emp_id INT,
+  pay_date DATE,
+  PRIMARY KEY (emp_id),
+  FOREIGN KEY (emp_id) REFERENCES employee(emp_id)
+);
+
+-- Task 2: Insert Data
+INSERT INTO employee (emp_id, emp_name) VALUES
+  (1, 'John Doe'),
+  (2, 'Jane Smith'),
+  (3, 'Michael Johnson'),
+  (4, 'Emily Brown'),
+  (5, 'David Lee');
+
+INSERT INTO department (dept_id, dept_name) VALUES
+  (101, 'Human Resources'),
+  (102, 'Finance'),
+  (103, 'IT'),
+  (104, 'Marketing'),
+  (105, 'Sales');
+
+INSERT INTO paydetails (emp_id, dept_id, basic, deductions, additions, doj) VALUES
+  (1, 101, 50000, 5000, 2000, '2022-01-15'),
+  (2, 102, 60000, 6000, 2500, '2021-03-22'),
+  (3, 103, 55000, 4500, 3000, '2023-07-01'),
+  (4, 104, 52000, 4000, 1500, '2020-10-30'),
+  (5, 105, 58000, 5500, 1800, '2019-08-14');
+
+
+INSERT INTO payroll (emp_id, pay_date) VALUES
+  (1, '2024-07-01'),
+  (2, '2024-07-02'),
+  (3, '2024-07-02'),
+  (4, '2024-07-03'),
+  (5, '2024-07-05');
+
+--list the employee details department wise
+select e.emp_id,e.emp_name,d.dept_name from employee e,department d,paydetails p where e.emp_id=p.emp_id and d.dept_id=p.dept_id;
+
+--list all the employees who joined after particular date
+select e.emp_name from employee e,paydetails p where e.emp_id=p.emp_id and doj>'2010-02-10';
+
+--list the details of employees whose basic salary is between 10000 and 20000
+select e.emp_id,e.emp_name from employee e,paydetails p where e.emp_id =p.emp_id and basic between 10000 and 20000;
+
+--give a count of how many employees are working in each department 
+select d.dept_name,count(e.emp_id) from employee e,department d,paydetails p where e.emp_id=p.emp_id and d.dept_id=p.dept_id group by d.dept_id; 
+
+--give a names of the employees whose net salary>10000
+select e.emp_name from employee e,paydetails p where e.emp_id = p.emp_id and (basic-deductions+additions) >10000;
+
+--list the details for an employee_id=10
+select e.emp_id,e.emp_name,d.dept_id,d.dept_name,p.basic,p.deductions,p.additions,p.doj,r.pay_date from employee e,department d,paydetails p,payroll r where e.emp_id=p.emp_id and d.dept_id=p.dept_id and e.emp_id=r.emp_id and e.emp_id=10;
+
+create view lists as select e.emp_name,d.dept_id,d.dept_name,basic,deductions,(basic-deductions+additions) as netsalary from employee e,department d,paydetails p where e.emp_id=p.emp_id and d.dept_id=p.dept_id;
+
+create view lists2 as select e.emp_name,(basic-deductions+additions) as netsalary from employee e.paydetails p where e.emp_id=p.emp_id;
