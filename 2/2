@@ -1,0 +1,78 @@
+CREATE TABLE student (
+    stud_no INT PRIMARY KEY,
+    stud_name VARCHAR(50)
+);
+
+CREATE TABLE membership (
+    mem_no INT PRIMARY KEY,
+    stud_no INT,
+    FOREIGN KEY (stud_no) REFERENCES student(stud_no)
+);
+
+CREATE TABLE book (
+    book_no INT PRIMARY KEY,
+    book_name VARCHAR(100),
+    author VARCHAR(50)
+);
+
+CREATE TABLE iss_rec (
+    iss_no INT PRIMARY KEY,
+    iss_date DATE,
+    mem_no INT,
+    book_no INT,
+    FOREIGN KEY (mem_no) REFERENCES membership(mem_no),
+    FOREIGN KEY (book_no) REFERENCES book(book_no)
+);
+-- Inserting data into student table
+INSERT INTO student (stud_no, stud_name) VALUES
+(1001, 'John Doe'),
+(1002, 'Jane Smith'),
+(1003, 'Michael Johnson'),
+(1004, 'Emily Brown'),
+(1005, 'David Lee');
+
+-- Inserting data into membership table
+INSERT INTO membership (mem_no, stud_no) VALUES
+(5001, 1001),
+(5002, 1002),
+(5003, 1003),
+(5004, 1004),
+(5005, 1005);
+
+-- Inserting data into book table
+INSERT INTO book (book_no, book_name, author) VALUES
+(101, 'The Great Gatsby', 'Scott Fitzgerald'),
+(102, 'Moby Dick', 'Herman Melville'),
+(103, 'Pride and Prejudice', 'Jane Austen'),
+(104, 'Jane Eyre', 'Charlotte Bronte'),
+(105, 'Animal Farm', 'George Orwell');
+
+-- Inserting data into iss_rec table
+INSERT INTO iss_rec (iss_no, iss_date, mem_no, book_no) VALUES
+(1, '2024-07-01', 5001, 101),
+(2, '2024-07-02', 5002, 102),
+(3, '2024-07-02', 5003, 103),
+(4, '2024-07-04', 5004, 104),
+(5, '2024-07-05', 5005, 105);
+
+--list all the student names with their membership numbers 
+select stud_name,mem_no from student s,membership m where s.stud_no=m.stud_no;
+
+--list all the issues for the current date with student and book names
+select stud_name,book_name from student s,book b,iss_rec i,membership m where b.book_no=i.book_no and m.mem_no=i.mem_no and s.stud_no=m.stud_no and iss_date='2016-12-15';
+
+--list the details of students who borrowed book whose author is jk rowling
+select s.stud_no,s.stud_name from student s,iss_rec i,book b,membership m where i.book_no=b.book_no and i.mem_no=m.mem_no and m.stud_no=s.stud_no and b.author='jk rowling';
+
+--give a count of how many books have been bought by each student
+select stud_name,count(b.book_no) from student s,membership m,book b,iss_rec i where s.stud_no=m.stud_no and m.mem_no=i.mem_no and b.book_no=i.book_no group by s.stud_no; 
+
+--give a list of books taken by student with stud_no as 5
+select b.book_name from student s,iss_rec i,book b,membership m where i.book_no=b.book_no and i.mem_no=m.mem_no and m.stud_no=s.stud_no and s.stud_no=5
+
+--list the book details which are issued as of today
+select b.book_no,b.book_name,b.author from book b,iss_rec i where i.book_no=b.book_no and iss_date='2016-12-15';
+
+create view details as select i.iss_no,i.iss_date,s.stud_name,b.book_name from student s,book b,iss_rec i,membership m where i.book_no=b.book_no and i.mem_no=m.mem_no and m.stud_no=s.stud_no;
+
+create view detail as select * from iss_rec where iss_date between '2016-12-15' and '2016-12-17'; 
