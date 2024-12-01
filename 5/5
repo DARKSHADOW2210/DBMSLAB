@@ -1,0 +1,21 @@
+--list all the machine allotments with the student names, lab and machine numbers
+select s.stud_no,l.mach_no,dayofweek,s.stud_name,lab_no,description from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no;
+
+-- list the total number of lab allotments day wise
+select a.stud_no,a.mach_no,dayofweek,lab_no,description from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no;
+
+--give a count of how many machines have been allocated to the 'cse' class
+select c.class,count(a.mach_no) from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no and c.class="cse";
+
+--give a machine allotment details of stud_no 502 with his personal and class details
+select a.stud_no,a.mach_no,dayofweek,stud_name,c.class,descrip from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no and s.stud_no=502;
+
+--count for how many machines have been allocated in lab_no 1 for the day of the week as "monday"
+select lab_no,count(a.mach_no) from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no and lab_no=701 and dayofweek="monday";
+
+--how many students class wise have allocates machines in the labs
+select c.class,count(s.stud_no),l.mach_no from student s,class c, lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no group by c.class;
+
+create view listall as select s.stud_no,s.stud_name,a.mach_no,l.lab_no,dayofweek from student s,class c, lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no; 
+
+create view weeklists  as select a.stud_no,a.mach_no,dayofweek from allotment a where dayofweek="thursday";
