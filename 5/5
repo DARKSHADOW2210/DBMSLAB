@@ -1,3 +1,65 @@
+-- Create Student Table
+CREATE TABLE Student (
+    stud_no INT PRIMARY KEY,
+    stud_name VARCHAR(50),
+    class VARCHAR(50)
+);
+
+-- Create Class Table
+CREATE TABLE Class (
+    class VARCHAR(50) PRIMARY KEY,
+    descrip VARCHAR(255)
+);
+
+-- Create Lab Table
+CREATE TABLE Lab (
+    mach_no INT PRIMARY KEY,
+    lab_no INT,
+    description VARCHAR(255)
+);
+
+-- Create Allotment Table
+CREATE TABLE Allotment (
+    stud_no INT,
+    mach_no INT,
+    dayof_week VARCHAR(20),
+    PRIMARY KEY (stud_no, mach_no, dayof_week),
+    FOREIGN KEY (stud_no) REFERENCES Student(stud_no),
+    FOREIGN KEY (mach_no) REFERENCES Lab(mach_no)
+);
+
+-- Insert data into Student Table
+INSERT INTO Student (stud_no, stud_name, class) VALUES
+(1, 'John Doe', 'CSE'),
+(2, 'Jane Smith', 'ECE'),
+(3, 'Mike Johnson', 'CSE'),
+(4, 'Emma Brown', 'ME'),
+(5, 'Sophia Davis', 'CSE');
+
+-- Insert data into Class Table
+INSERT INTO Class (class, descrip) VALUES
+('CSE', 'Computer Science Engineering'),
+('ECE', 'Electronics and Communication Engineering'),
+('ME', 'Mechanical Engineering'),
+('IT', 'Information Technology'),
+('BIO', 'Biomedical Engineering');
+
+-- Insert data into Lab Table
+INSERT INTO Lab (mach_no, lab_no, description) VALUES
+(101, 1, 'Physics Lab'),
+(102, 1, 'Chemistry Lab'),
+(103, 2, 'Computer Lab'),
+(104, 2, 'Electrical Lab'),
+(105, 3, 'Mechanical Lab');
+
+-- Insert data into Allotment Table
+INSERT INTO Allotment (stud_no, mach_no, dayof_week) VALUES
+(1, 101, 'Monday'),
+(2, 102, 'Tuesday'),
+(3, 103, 'Wednesday'),
+(4, 104, 'Thursday'),
+(5, 105, 'Friday');
+
 --list all the machine allotments with the student names, lab and machine numbers
 select s.stud_no,l.mach_no,dayofweek,s.stud_name,lab_no,description from student s,class c,lab l,allotment a where a.stud_no=s.stud_no and c.class=s.class and l.mach_no=a.mach_no;
 
